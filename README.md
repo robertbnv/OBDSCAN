@@ -7,6 +7,36 @@ The selected live values also appear on the CarPlay screen through an iOS Live A
 
 Everything here uses free tools and free accounts.
 
+> **Early version.** The app runs on an iPhone and is tested against a simulated car, but it has not
+> yet been tried with a real adapter in a real car.
+
+## Install on an iPhone
+
+**Download: [obdscan-unsigned.ipa](https://github.com/robertbnv/OBDSCAN/releases/latest/download/obdscan-unsigned.ipa)**
+(always the newest build)
+
+Apple does not let an iPhone install apps from outside the App Store directly. The file has to be
+installed from a computer and signed with your own Apple ID. This costs nothing.
+
+You need a Windows PC or Mac, a USB cable, an Apple ID and [Sideloadly](https://sideloadly.io).
+On Windows, Sideloadly also needs Apple's iTunes, downloaded from apple.com rather than the
+Microsoft Store.
+
+1. Connect the iPhone by USB and tap **Trust** on the phone.
+2. Open Sideloadly, drag the `.ipa` file into it, enter your Apple ID and press **Start**.
+3. On the iPhone open **Settings › General › VPN & Device Management** and trust the entry with
+   your Apple ID.
+4. Open **Settings › Privacy & Security › Developer Mode**, switch it on and restart the phone.
+5. Open **OBD Scan**. **Start demo** works without an adapter.
+
+Good to know:
+
+- With a free Apple ID the app stops opening after 7 days. Run Sideloadly again to renew it.
+  At most three apps installed this way can be on a phone at once.
+- Sideloadly is a third-party tool that receives your Apple ID password. Many people use a
+  separate Apple ID for it.
+- The app needs iOS 15 or later. The Live Activity needs iOS 18, and iOS 26 to appear on CarPlay.
+
 ## What works today
 
 | Area | Status |
@@ -19,34 +49,11 @@ Everything here uses free tools and free accounts.
 | Monitor: 17 safety rules plus learning each car's normal values | Tested |
 | Drive recording to CSV | Written; file saving only runs on a phone |
 | Bluetooth LE and WiFi links | Written, not yet tried with a real adapter |
-| iPhone build, notifications, Live Activity on CarPlay | Written, **not yet compiled** (needs the cloud Mac build below) |
+| iPhone app | Builds in the cloud and runs on an iPhone |
+| Notifications and the Live Activity on CarPlay | Compile, but not yet confirmed on a device |
 | Android | Not configured yet |
 
-## Try it now on this PC
-
-The demo car is a simulated vehicle with live data, stored fault codes and faults you can switch on.
-
-```powershell
-E:\tools\flutter\bin\flutter.bat test
-```
-
-```powershell
-E:\tools\flutter\bin\flutter.bat run -d edge
-```
-
-Choose **Start demo**, then open **Assistant** and switch on a fault to watch the monitor react.
-
-## What you need
-
-| Item | Cost | Why |
-| --- | --- | --- |
-| Bluetooth LE OBD adapter | one-off purchase | See "Choosing an adapter" |
-| Apple ID | free | Signs the app for your own iPhone |
-| GitHub account | free | Its hosted Macs compile the iPhone app |
-| Sideloadly, plus Apple's iTunes for Windows | free | Installs the compiled app from this PC over USB |
-| iPhone on iOS 18 or later | | Needed for the Live Activity; iOS 26 or later shows it on CarPlay |
-
-### Choosing an adapter
+## Choosing an adapter
 
 Buy a **Bluetooth LE** adapter that says it supports iOS.
 
@@ -59,23 +66,6 @@ Buy a **Bluetooth LE** adapter that says it supports iOS.
 Adapters known for iOS support include OBDLink CX, Vgate iCar Pro BLE 4.0 and Veepeak OBDCheck BLE+.
 The app looks for the serial profiles these use, but none has been tried with it yet. If one does
 not connect, **Settings › Adapter log** shows the raw conversation.
-
-## Putting it on your iPhone (free route)
-
-1. Create a GitHub repository and push this folder to its `main` branch.
-2. On GitHub open **Actions › iOS build**. It runs on every push; when it finishes, download the
-   `obdscan-unsigned-ipa` artifact and unzip it to get `obdscan-unsigned.ipa`.
-3. On the iPhone enable **Settings › Privacy & Security › Developer Mode**.
-4. Connect the iPhone by USB, open Sideloadly, drop the `.ipa` in, enter your Apple ID and install.
-5. On the iPhone trust the certificate under **Settings › General › VPN & Device Management**.
-
-Limits of a free Apple ID: the app stops opening after 7 days until Sideloadly re-signs it
-(it can do this automatically over WiFi), and at most three such apps can be installed at once.
-Private GitHub repositories get about 200 free Mac minutes a month, roughly a dozen builds;
-public repositories are unlimited.
-
-Sideloadly is a third-party tool that receives your Apple ID password. Many people use a separate
-Apple ID for it.
 
 ## CarPlay
 
@@ -109,6 +99,27 @@ transmission, body modules) and can run service functions and actuator tests. Th
 per-manufacturer data that is not publicly available. This app covers the full standardised OBD-II
 feature set that every car since about 2001 (petrol, EU) / 1996 (US) supports.
 
+## For developers
+
+The demo car is a simulated vehicle with live data, stored fault codes and faults you can switch on,
+so the app can be run and tested without a car. With Flutter 3.50 installed:
+
+```bash
+flutter test
+```
+
+```bash
+flutter run -d edge
+```
+
+If `flutter` is not on the PATH, call it by its full path, for example `E:\tools\flutter\bin\flutter.bat`.
+
+### Publishing a new version
+
+Every push to the `main` branch starts the **iOS build** workflow on a GitHub-hosted Mac. It runs the
+tests, compiles the app without code signing and replaces the download at the top of this page with
+the new file. Progress and logs are under the repository's **Actions** tab.
+
 ## Project layout
 
 | Path | Contents |
@@ -123,6 +134,6 @@ feature set that every car since about 2001 (petrol, EU) / 1996 (US) supports.
 | `assets/dtc/` | Fault-code database, generated by `tool/build_dtc_assets.py` |
 | `ios/ObdLiveActivity/` | The Live Activity (SwiftUI) |
 | `ios/tool/add_live_activity_target.rb` | Adds the Live Activity to the Xcode project during the cloud build |
-| `.github/workflows/ios.yml` | Cloud build of the iPhone app |
+| `.github/workflows/ios.yml` | Cloud build of the iPhone app and its public download |
 
 Fault-code descriptions come from the [OBDex](https://github.com/foerbsnavi/OBDex) dataset (CC0-1.0).

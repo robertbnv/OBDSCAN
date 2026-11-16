@@ -8,6 +8,10 @@ on:
   push:
     branches: [main]
 
+# Needed to publish the app file as a release (the public download).
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: macos-latest
@@ -46,3 +50,18 @@ jobs:
           name: obdscan-unsigned-ipa
           path: obdscan-unsigned.ipa
           if-no-files-found: error
+
+      # Replaces the single "latest-build" release, so this address always
+      # serves the newest app file to anyone, without signing in:
+      #   https://github.com/<owner>/<repo>/releases/latest/download/obdscan-unsigned.ipa
+      - name: Publish the public download
+        if: github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          gh release delete latest-build --yes --cleanup-tag || true
+          gh release create latest-build obdscan-unsigned.ipa \
+            --target "$GITHUB_SHA" \
+            --title "OBD Scan for iPhone (latest build)" \
+            --notes "Unsigned iPhone app, built from commit ${GITHUB_SHA::7}. It has to be installed from a computer with Sideloadly and your own Apple ID. Instructions: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}#install-on-an-iphone"
