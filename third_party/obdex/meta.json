@@ -1,0 +1,69 @@
+{
+  "generated_at": "2026-11-07T13:44:03.324Z",
+  "license": "CC0-1.0",
+  "attribution": {
+    "note": "Credit is voluntary under CC0, but appreciated.",
+    "text": "OBD-II code data: obdex (https://github.com/foerbsnavi/obdex), CC0-1.0",
+    "html": "OBD-II code data: <a href=\"https://github.com/foerbsnavi/obdex\">obdex</a> (CC0-1.0)"
+  },
+  "counts": {
+    "generic": {
+      "total": 9533,
+      "enriched": 9533,
+      "indexed": 0,
+      "reviewed": 9533,
+      "symptoms": 26762,
+      "causes": 33401,
+      "sources": 30875,
+      "related_codes": 46824,
+      "by_family": {
+        "P0": {
+          "total": 3705,
+          "enriched": 3705,
+          "indexed": 0,
+          "reviewed": 3705
+        },
+        "P2": {
+          "total": 3495,
+          "enriched": 3495,
+          "indexed": 0,
+          "reviewed": 3495
+        },
+        "P3": {
+          "total": 155,
+          "enriched": 155,
+          "indexed": 0,
+          "reviewed": 155
+        },
+        "U0": {
+          "total": 1055,
+          "enriched": 1055,
+          "indexed": 0,
+          "reviewed": 1055
+        },
+        "U3": {
+          "total": 174,
+          "enriched": 174,
+          "indexed": 0,
+          "reviewed": 174
+        },
+        "B0": {
+          "total": 323,
+          "enriched": 323,
+          "indexed": 0,
+          "reviewed": 323
+        },
+        "C0": {
+          "total": 626,
+          "enriched": 626,
+          "indexed": 0,
+          "reviewed": 626
+        }
+      }
+    },
+    "pids": {
+      "mode01": 119,
+      "mode09": 13
+    }
+  }
+}

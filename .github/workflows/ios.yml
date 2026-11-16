@@ -1,0 +1,48 @@
+# Builds the iPhone app on a GitHub-hosted Mac, because iOS apps cannot be
+# compiled on Windows. The result is an unsigned .ipa that is then signed and
+# installed from the Windows PC with a free Apple ID (see README.md).
+name: iOS build
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: 3.50.0
+          cache: true
+
+      - name: Fetch packages
+        run: flutter pub get
+
+      - name: Run tests
+        run: flutter test
+
+      - name: Add the Live Activity extension to the Xcode project
+        run: |
+          gem list -i xcodeproj > /dev/null || gem install xcodeproj
+          ruby ios/tool/add_live_activity_target.rb
+
+      - name: Build without code signing
+        run: flutter build ios --release --no-codesign
+
+      - name: Package the unsigned .ipa
+        run: |
+          mkdir Payload
+          cp -R build/ios/iphoneos/Runner.app Payload/
+          zip -qry obdscan-unsigned.ipa Payload
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: obdscan-unsigned-ipa
+          path: obdscan-unsigned.ipa
+          if-no-files-found: error
